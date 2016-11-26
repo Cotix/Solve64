@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
     int count = 0;
     int count2 = 0;
     while (1) {
+        workCounter = 0;
         initBoard();
         for (int i = 0; i != 20; ++i) {
             while (move(rand()%16, color) == 0);
