@@ -17,7 +17,6 @@ void initBoard() {
     board[0] = 0;
     board[1] = 0;
     myColor = 0;
-    initZobrist();
 }
 
 inline int move(int pos, int player) {

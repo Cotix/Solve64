@@ -27,6 +27,7 @@ struct bucket* table;
 
 
 void initTable(unsigned long long size);
+void save(int score, int work, int flag, int s, int idx);
 void putTable(int score, int work, int flag);
 int getType();
 int getScore();

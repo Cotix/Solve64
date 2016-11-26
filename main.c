@@ -47,6 +47,7 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 
 
 int main() {
+    initZobrist();
     initBoard();
     initTable(167772161);
     printf("%i\n", alphabeta(13, -INFINITY, INFINITY, 0));
