@@ -1,7 +1,28 @@
 #include "board.h"
+#include "util.h"
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+void initZobrist() {
+    srand(0x51c9f6e6);
+    for (int i = 0; i != 128; ++i)
+        zobrist[i] = rand64();
+    srand(time(0));
+}
+
+void initBoard() {
+    memset(height, 0, sizeof(unsigned int)*16);
+    hash = 0;
+    board[0] = 0;
+    board[1] = 0;
+    myColor = 0;
+    initZobrist();
+}
 
 inline int move(int pos, int player) {
     if (height[pos] == 4) return 0;
+    hash ^= zobrist[(height[pos]*16 + pos) + 64*player];
     board[player] |= 1L << (height[pos]*16 + pos);
     height[pos]++;
     return 1;
@@ -9,6 +30,7 @@ inline int move(int pos, int player) {
 
 inline void unmove(int pos, int player) {
     board[player] ^= 1L << ((--height[pos])*16 + pos);
+    hash ^= zobrist[(height[pos]*16 + pos) + 64*player];
 }
 
 inline int isFull() {

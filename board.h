@@ -34,7 +34,11 @@
 unsigned long long board[2];
 unsigned int height[16];
 unsigned int myColor;
+unsigned long long hash;
+unsigned long long zobrist[128];
 
+void initBoard();
+void initZobrist();
 int move(int pos, int player);
 void unmove(int pos, int player);
 int isFull();
