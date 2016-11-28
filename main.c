@@ -50,5 +50,12 @@ int main(int argc, char **argv) {
     initZobrist();
     initTable(167772161);
     initBoard();
-    printf("%i\n", alphabeta(12, -INFINITY, INFINITY, 0));
+    move(0, 0);
+    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1));
+    unmove(0,0);
+    move(1, 0);
+    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1));
+    unmove(1,0);
+    move(5, 0);
+    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1)); 
 }
