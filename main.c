@@ -49,27 +49,6 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 int main(int argc, char **argv) {
     initZobrist();
     initTable(167772161);
-    srand(atoi(argv[1]));
     initBoard();
-    int color = 0;
-    int count = 0;
-    int count2 = 0;
-    while (1) {
-        workCounter = 0;
-        initBoard();
-        for (int i = 0; i != 20; ++i) {
-            while (move(rand()%16, color) == 0);
-            color = !color;
-        }
-        puts("Got this far");
-        count2++;
-        if (!hasWon(0) && !hasWon(1)) {
-            printf("%i %i/%i\n", alphabeta(12, -INFINITY, INFINITY, color), ++count,count2);
-        }
-        if (count%100 == 0) {
-            FILE* f = fopen(argv[1], "w");
-            fwrite(table, sizeof(struct bucket), transSize, f);
-            fclose(f);
-        }
-    }
+    printf("%i\n", alphabeta(12, -INFINITY, INFINITY, 0));
 }
