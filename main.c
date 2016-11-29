@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #define INFINITY 100000
-
+#define FULLSEARCH 0
 unsigned long long workCounter = 0;
-int order[] = {5,6,9,10,12,15,3,0,8,4,1,2,7,11,14,13};
+int order[] = {5,6,9,10,0,3,12,15,8,4,1,2,7,11,14,13};
 
 int alphabeta(int depth, int alpha, int beta, int color) {
     unsigned long long oldWork = workCounter++;
@@ -23,6 +23,25 @@ int alphabeta(int depth, int alpha, int beta, int color) {
     int oldAlpha = alpha;
     if (hasWon(!color)) return -INFINITY;
     if (depth == 0 || isFull()) return 0;
+
+    for (int idx = 0; idx != 16; ++idx) {
+        if (!move(idx, color)) continue;
+        if (hasWon(color)) {
+            unmove(idx, color);
+            return INFINITY;
+        }
+        unmove(idx, color);
+        if (!move(idx, !color)) continue;
+        if (hasWon(!color)) {
+            unmove(idx,!color);
+            move(idx, color);
+            int res = -alphabeta(depth-1, -beta, -alpha, !color);
+            unmove(idx, color);
+            return res;
+        }
+        unmove(idx, !color);
+    }
+
     int best = -INFINITY;
     for (int idx = 0; idx != 16; ++idx) {
         int i = order[idx];
@@ -39,7 +58,7 @@ int alphabeta(int depth, int alpha, int beta, int color) {
     unsigned long long work = workCounter - oldWork;
     unsigned long long logWork = 0;
     while ((work>>=1) > 0) logWork++;
-    putTable(best, logWork, f);
+    if (best != 0 || FULLSEARCH != 0) putTable(best, logWork, f);
     return best;
 }
 
@@ -48,14 +67,8 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 
 int main(int argc, char **argv) {
     initZobrist();
-    initTable(167772161);
+    initTable(9063973);
     initBoard();
-    move(0, 0);
-    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1));
-    unmove(0,0);
-    move(1, 0);
-    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1));
-    unmove(1,0);
-    move(5, 0);
-    printf("%i\n", -alphabeta(31, -INFINITY, INFINITY, 1)); 
+    printf("%i\n", -alphabeta(20, -INFINITY, INFINITY, 0));
+    return 0;
 }
