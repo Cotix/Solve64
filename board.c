@@ -11,6 +11,12 @@ void initZobrist() {
     srand(time(0));
 }
 
+inline unsigned long long getHash() {
+    unsigned long long p1 = getPotential(0);
+    unsigned long long p2 = getPotential(1);
+    return (((board[0]&p1)*25981L) ^ ((board[1]&p1)*1091)) * (board[0]|board[1]);
+}
+
 void initBoard() {
     memset(height, 0, sizeof(unsigned int)*16);
     hash = 0;
