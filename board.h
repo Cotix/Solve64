@@ -44,5 +44,7 @@ void unmove(int pos, int player);
 int isFull();
 int hasWon(int player);
 int winCheck(int player, unsigned long long mask, int shift);
+unsigned long long potentialCheck(int player, unsigned long long mask, int shift);
+unsigned long long getPotential(int player);
 #endif
 
