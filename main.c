@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #define INFINITY 100000
-#define FULLSEARCH 0
+#define FULLSEARCH 1
 unsigned long long workCounter = 0;
 int order[] = {5,6,9,10,0,3,12,15,8,4,1,2,7,11,14,13};
 
@@ -67,8 +67,8 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 
 int main(int argc, char **argv) {
     initZobrist();
-    initTable(9063973);
+    initTable(311299913);
     initBoard();
-    printf("%i\n", -alphabeta(20, -INFINITY, INFINITY, 0));
+    printf("%i\n", alphabeta(64, -INFINITY, INFINITY, 0));
     return 0;
 }

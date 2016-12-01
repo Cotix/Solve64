@@ -11,6 +11,12 @@ void initZobrist() {
     srand(time(0));
 }
 
+inline unsigned long long getHash() {
+    unsigned long long p1 = getPotential(0);
+    unsigned long long p2 = getPotential(1);
+    return (((board[0]&p1)*25981L) ^ ((board[1]&p1)*1091)) * (board[0]|board[1]);
+}
+
 void initBoard() {
     memset(height, 0, sizeof(unsigned int)*16);
     hash = 0;
@@ -44,6 +50,45 @@ inline int winCheck(int player, unsigned long long mask, int shift) {
     if (h != 0) return 1;
     return 0;
 }
+
+inline unsigned long long potentialCheck(int player, unsigned long long mask, int shift) {
+    unsigned long long h = board[player];
+    mask |= board[!player];
+    int i;
+    for (i = 0; i != 3; ++i)
+        h = ((h&(~mask))<<shift)&board[player];
+    for (i = 0; i != 3; ++i)
+        h |= ((h&(~mask))>>shift);
+
+    return h;
+}
+
+inline unsigned long long getPotential(int player) {
+    //First check inside of the horizontal fields
+    //Check for horizontal 4 in a row
+    unsigned long long result = 0;
+    result |= potentialCheck(player, FIELD_HOR_EDGES, 1);
+    result |= potentialCheck(player, FIELD_VER_EDGES, 4);
+    result |= potentialCheck(player, FIELD_DIA_TLEFT, 5);
+    result |= potentialCheck(player, FIELD_DIA_BLEFT, 3);
+    result |= potentialCheck(player, 0L, 16);
+    result |= potentialCheck(player, FIELD_VER_EDGES, 20);
+    result |= potentialCheck(player, FIELD_DIA_3D_RIGHT, 17);
+    result |= potentialCheck(player, FIELD_DIA_3D_DOWN, 12);
+    result |= potentialCheck(player, FIELD_DIA_3D_LEFT, 15);    
+
+    if (((board[player]|(~board[!player]))&FIELD_DIA1) == FIELD_DIA1)
+        result |= FIELD_DIA1;
+    if (((board[player]|(~board[!player]))&FIELD_DIA1) == FIELD_DIA2)
+        result |= FIELD_DIA2;
+    if (((board[player]|(~board[!player]))&FIELD_DIA1) == FIELD_DIA3)
+        result |= FIELD_DIA3;
+    if (((board[player]|(~board[!player]))&FIELD_DIA1) == FIELD_DIA4)
+        result |= FIELD_DIA4;
+
+    return result;
+}
+
 
 inline int hasWon(int player) {
     //First check inside of the horizontal fields
