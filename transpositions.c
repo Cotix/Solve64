@@ -19,16 +19,13 @@ inline void save(int score, int work, int flag, int s, int idx) {
     table[idx].slot[s].board[2] = board[1]|board[0];
     table[idx].slot[s].data = flag | (score<<2);
     table[idx].slot[s].work = work;
-
 }
 
 inline void putTable(int score, int work, int flag) {
     unsigned long long idx = getHash()%transSize;
-    if (table[idx].slot[0].data == 0) {
-        save(score, work, flag, 0, idx);
-    } else if (table[idx].slot[1].data == 0) {
-        save(score, work, flag, 0, idx);
-    } else if (table[idx].slot[1].work <= work) {
+    if (table[idx].slot[1].work <= work) {
+        save(score, work, flag, 1, idx);
+    } else {
         save(score, work, flag, 0, idx);
     }
 }
