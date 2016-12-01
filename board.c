@@ -14,7 +14,7 @@ void initZobrist() {
 inline unsigned long long getHash() {
     unsigned long long p1 = getPotential(0);
     unsigned long long p2 = getPotential(1);
-    return (((board[0]&p1)*25981L) ^ ((board[1]&p1)*1091)) * (board[0]|board[1]);
+    return (((board[0]&p1)*2L) ^ ((board[1]&p1))) * (board[0]|board[1]);
 }
 
 void initBoard() {
@@ -52,11 +52,11 @@ inline int winCheck(int player, unsigned long long mask, int shift) {
 }
 
 inline unsigned long long potentialCheck(int player, unsigned long long mask, int shift) {
-    unsigned long long h = board[player];
+    unsigned long long h = BOARD_FULL;
     mask |= board[!player];
     int i;
     for (i = 0; i != 3; ++i)
-        h = ((h&(~mask))<<shift)&board[player];
+        h = ((h&(~mask))<<shift);
     for (i = 0; i != 3; ++i)
         h |= ((h&(~mask))>>shift);
 
@@ -66,6 +66,7 @@ inline unsigned long long potentialCheck(int player, unsigned long long mask, in
 inline unsigned long long getPotential(int player) {
     //First check inside of the horizontal fields
     //Check for horizontal 4 in a row
+    return BOARD_FULL;
     unsigned long long result = 0;
     result |= potentialCheck(player, FIELD_HOR_EDGES, 1);
     result |= potentialCheck(player, FIELD_VER_EDGES, 4);
