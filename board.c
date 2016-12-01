@@ -25,6 +25,10 @@ void initBoard() {
     myColor = 0;
 }
 
+inline __uint128_t getBoard() {
+    return (((__uint128_t) board[0])<<64) | ((__uint128_t) board[1]);
+}
+
 inline int move(int pos, int player) {
     if (height[pos] == 4) return 0;
     hash ^= zobrist[(height[pos]*16 + pos) + 64*player];

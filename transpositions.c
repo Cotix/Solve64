@@ -32,16 +32,18 @@ inline void putTable(int score, int work, int flag) {
 
 inline int getType() {
     unsigned long long idx = getHash()%transSize;
-    unsigned long long p1 = board[0]&getPotential(0);
-    unsigned long long p2 = board[1]&getPotential(1);
+    __uint128_t b = getBoard();
+    unsigned long long p1 = (b>>64)&getPotential(0);
+    unsigned long long p2 = (b&0xFFFFFFFFFFFFFFFFL)&getPotential(1);
+    unsigned long long p3 = (b>>64)|(b&0xFFFFFFFFFFFFFFFFL);
     if (table[idx].slot[0].board[0] == p1 &&
         table[idx].slot[0].board[1] == p2 &&
-        table[idx].slot[0].board[2] == board[0]|board[1]) {
+        table[idx].slot[0].board[2] == p3) {
         return table[idx].slot[0].data&TYPE_MASK;
     }
     else if (table[idx].slot[1].board[0] == p1 &&
              table[idx].slot[1].board[1] == p2 &&
-             table[idx].slot[1].board[2] == board[0]|board[1]) {
+             table[idx].slot[1].board[2] == p3) {
         return table[idx].slot[1].data&TYPE_MASK;
     }
     return TT_EMPTY;
@@ -49,16 +51,18 @@ inline int getType() {
 
 inline int getScore() {
     unsigned long long idx = getHash()%transSize;
-    unsigned long long p1 = board[0]&getPotential(0);
-    unsigned long long p2 = board[1]&getPotential(1);
+    __uint128_t b = getBoard();
+    unsigned long long p1 = (b>>64)&getPotential(0);
+    unsigned long long p2 = (b&0xFFFFFFFFFFFFFFFFL)&getPotential(1);
+    unsigned long long p3 = (b>>64)|(b&0xFFFFFFFFFFFFFFFFL);
     if (table[idx].slot[0].board[0] == p1 &&
         table[idx].slot[0].board[1] == p2 &&
-        table[idx].slot[0].board[2] == board[0]|board[1]) {
+        table[idx].slot[0].board[2] == p3) {
         return table[idx].slot[0].data&RESULT_MASK;
     }
     else if (table[idx].slot[1].board[0] == p1 &&
              table[idx].slot[1].board[1] == p2 &&
-             table[idx].slot[1].board[2] == board[0]|board[1]) {
+             table[idx].slot[1].board[2] == p3) {
         return table[idx].slot[1].data&RESULT_MASK;
     }
     return 0;
