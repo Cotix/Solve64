@@ -13,10 +13,10 @@ void initTable(unsigned long long size) {
     memset(table, 0, sizeof(struct bucket)*size);
 }
 
-inline void save(int score, int work, int flag, int s, int idx) {
+inline void save(int score, int work, int flag, int s, unsigned long long idx) {
     table[idx].slot[s].board[0] = board[0]&getPotential(0);
     table[idx].slot[s].board[1] = board[1]&getPotential(1);
-    table[idx].slot[s].board[2] = board[1]|board[0];
+    table[idx].slot[s].board[2] = board[0]|board[1];
     table[idx].slot[s].data = flag | (score<<2);
     table[idx].slot[s].work = work;
 }
