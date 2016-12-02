@@ -1,3 +1,4 @@
+#include "settings.h"
 #include "board.h"
 #include "util.h"
 #include <stdlib.h>
@@ -12,9 +13,7 @@ void initZobrist() {
 }
 
 inline unsigned long long getHash() {
-    unsigned long long p1 = getPotential(0);
-    unsigned long long p2 = getPotential(1);
-    return (((board[0]&p1)*2L) ^ ((board[1]&p1))) * (board[0]|board[1]);
+    return (~((transBoardPotential >>64)*19L)^transBoardPotential)^board[0]^board[1];
 }
 
 void initBoard() {
@@ -25,8 +24,39 @@ void initBoard() {
     myColor = 0;
 }
 
-inline __uint128_t getBoard() {
-    return (((__uint128_t) board[0])<<64) | ((__uint128_t) board[1]);
+inline __uint128_t rotate(__uint128_t b) {
+    int rotation[] = {3, 6, 9, 12, 2, 1, 4, 7, -7, -4, -1, 2, -12, -9, -6, -1};
+    __uint128_t mask = 0;
+    __uint128_t result = 0;
+    for (int i = 0; i != 16; ++i) mask = (mask<<16)|1;
+    for (int i = 0; i != 16; ++i) {
+        if (rotation[i] > 0) {
+            result |= (b&mask)<<rotation[i];
+        } else {
+            result |= (b&mask)>>(-rotation[i]);
+        }
+        mask <<= 1;
+    }
+    return result;
+}
+
+inline __uint128_t getBoard(int full) {
+    int b0 = board[0];
+    int b1 = board[1];
+    if (full) {
+        b0 &= getPotential(0);
+        b1 &= getPotential(1);
+    }
+    __uint128_t b = (((__uint128_t) b0)<<64) | ((__uint128_t) b1);
+    if (moves > CALCULATE_ROTATIONS_UPTO) return b;
+    __uint128_t biggest = b;
+    for (int i = 0; i != 4; ++i) {
+        b = rotate(b);
+        if (b > biggest) {
+            biggest = b;
+        }
+    }
+    return biggest;
 }
 
 inline int move(int pos, int player) {
@@ -34,12 +64,18 @@ inline int move(int pos, int player) {
     hash ^= zobrist[(height[pos]*16 + pos) + 64*player];
     board[player] |= 1L << (height[pos]*16 + pos);
     height[pos]++;
+    moves++;
+    transBoard = getBoard(0);
+    transBoardPotential = getBoard(ONLY_CONSIDER_POTENT);
     return 1;
 }
 
 inline void unmove(int pos, int player) {
+    moves--;
     board[player] ^= 1L << ((--height[pos])*16 + pos);
     hash ^= zobrist[(height[pos]*16 + pos) + 64*player];
+    transBoard = getBoard(0);
+    transBoardPotential = getBoard(ONLY_CONSIDER_POTENT);
 }
 
 inline int isFull() {
@@ -70,7 +106,6 @@ inline unsigned long long potentialCheck(int player, unsigned long long mask, in
 inline unsigned long long getPotential(int player) {
     //First check inside of the horizontal fields
     //Check for horizontal 4 in a row
-    return BOARD_FULL;
     unsigned long long result = 0;
     result |= potentialCheck(player, FIELD_HOR_EDGES, 1);
     result |= potentialCheck(player, FIELD_VER_EDGES, 4);

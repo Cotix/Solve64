@@ -36,6 +36,9 @@ unsigned int height[16];
 unsigned int myColor;
 unsigned long long hash;
 unsigned long long zobrist[128];
+unsigned int moves;
+__uint128_t transBoard, transBoardPotential;
+
 
 void initBoard();
 void initZobrist();
@@ -47,7 +50,7 @@ int winCheck(int player, unsigned long long mask, int shift);
 unsigned long long potentialCheck(int player, unsigned long long mask, int shift);
 unsigned long long getPotential(int player);
 unsigned long long getHash();
-__uint128_t getBoard();
+__uint128_t getBoard(int full);
 
 #endif
 
