@@ -51,6 +51,6 @@ unsigned long long potentialCheck(int player, unsigned long long mask, int shift
 unsigned long long getPotential(int player);
 unsigned long long getHash();
 __uint128_t getBoard(int full);
-
+__uint128_t rotate(__uint128_t);
 #endif
 

@@ -22,10 +22,11 @@ void initBoard() {
     board[0] = 0;
     board[1] = 0;
     myColor = 0;
+    moves = 0;
 }
 
 inline __uint128_t rotate(__uint128_t b) {
-    int rotation[] = {3, 6, 9, 12, 2, 1, 4, 7, -7, -4, -1, 2, -12, -9, -6, -1};
+    int rotation[] = {3, 6, 9, 12, -2, 1, 4, 7, -7, -4, -1, 2, -12, -9, -6, -3};
     __uint128_t mask = 0;
     __uint128_t result = 0;
     for (int i = 0; i != 16; ++i) mask = (mask<<16)|1;
@@ -41,8 +42,8 @@ inline __uint128_t rotate(__uint128_t b) {
 }
 
 inline __uint128_t getBoard(int full) {
-    int b0 = board[0];
-    int b1 = board[1];
+    unsigned long long b0 = board[0];
+    unsigned long long b1 = board[1];
     if (full) {
         b0 &= getPotential(0);
         b1 &= getPotential(1);
