@@ -5,21 +5,31 @@
 #define INFINITY 100000
 #define FULLSEARCH 1
 unsigned long long workCounter = 0;
+unsigned long long realWork = 0;
 int order[] = {5,6,9,10,0,3,12,15,8,4,1,2,7,11,14,13};
 
 int alphabeta(int depth, int alpha, int beta, int color) {
-    unsigned long long oldWork = workCounter++;
     int transType = getType();
     if (transType != TT_EMPTY) { 
-        if (transType == TT_EXACT) return getScore();
+        if (transType == TT_EXACT) {
+            workCounter += (1<<getWork());
+            return getScore();
+        }
         else if (transType == TT_UPPER) {
             beta = 0;
-            if (alpha >= beta) return getScore();
+            if (alpha >= beta) { 
+                workCounter += (1<<getWork());
+                return getScore();
+            }
         } else if (transType == TT_LOWER) {
             alpha = 0;
-            if (alpha >= beta) return getScore();
+            if (alpha >= beta) {
+                workCounter += (1<<getWork());
+                return getScore();
+            }
         }        
     }
+    unsigned long long oldWork = workCounter++;
     int oldAlpha = alpha;
     if (hasWon(!color)) return -INFINITY;
     if (depth == 0 || isFull()) return 0;
@@ -59,6 +69,7 @@ int alphabeta(int depth, int alpha, int beta, int color) {
     unsigned long long logWork = 0;
     while ((work>>=1) > 0) logWork++;
     if (best != 0 || FULLSEARCH != 0) putTable(best, logWork, f);
+    realWork++;
     return best;
 }
 
@@ -67,10 +78,10 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 
 int main(int argc, char **argv) {
     initZobrist();
-    initTable(120000000);
+    initTable(120001099);
     initBoard();
     printf("%i\n", alphabeta(atoi(argv[1]), -INFINITY, INFINITY, 0));
-    
+    printf("misses:%llu workcounter:%llu realwork:%llu\n", transMisses, workCounter, realWork); 
 
     return 0;
 }

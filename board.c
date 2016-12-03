@@ -13,7 +13,7 @@ void initZobrist() {
 }
 
 inline unsigned long long getHash() {
-    return (~((transBoardPotential >>64)*19L)^transBoardPotential)^board[0]^board[1];
+    return ((transBoardPotential>>64)*2147483647)^(transBoardPotential*20341007); 
 }
 
 void initBoard() {

@@ -24,11 +24,13 @@ struct bucket {
 
 unsigned long long transSize;
 struct bucket* table;
-
+unsigned long long transMisses;
 
 void initTable(unsigned long long size);
 void save(int score, int work, int flag, int s, unsigned long long idx);
 void putTable(int score, int work, int flag);
 int getType();
 int getScore();
+int getWork();
+
 #endif
