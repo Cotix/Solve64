@@ -78,10 +78,27 @@ int alphabeta(int depth, int alpha, int beta, int color) {
 
 int main(int argc, char **argv) {
     initZobrist();
-    initTable(120001099);
+    initTable(211111133);
     initBoard();
-    printf("%i\n", alphabeta(atoi(argv[1]), -INFINITY, INFINITY, 0));
-    printf("misses:%llu workcounter:%llu realwork:%llu\n", transMisses, workCounter, realWork); 
+    while (1) {
+        int best = -INFINITY;
+        int m = -1;
+        for (int idx = 0; idx != 16; ++idx) {
+            if (!move(idx, 0)) continue;
+            int res = -alphabeta(12, -INFINITY, INFINITY, 1);
+            if (res >= best) {
+                best = res;
+                m = idx;
+            }
+            unmove(idx,0);
+        }
+        move(m, 0);
+        printf("%i %i\n", m, best);
+        if (hasWon(0)) puts("Ik win!");
+        scanf("%i", &m);
+        move(m, 1);
+        if (hasWon(1)) puts("Wow, goed gespeeld!");
+    }
 
     return 0;
 }
